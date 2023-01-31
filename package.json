@@ -1,0 +1,26 @@
+{
+  "name": "gift-wrapping-be",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon run server.js",
+    "run": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.2",
+    "is-empty": "^1.2.0",
+    "mongoose": "^6.1.8",
+    "nodemon": "^2.0.15",
+    "passport-jwt": "^4.0.0",
+    "validator": "^13.7.0"
+  }
+}
