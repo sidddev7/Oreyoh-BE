@@ -5,8 +5,6 @@ import cors from "cors";
 
 import dbconfig from "./config/dbConfig.js";
 import users from "./routes/users.js";
-import product from "./routes/product.js";
-import category from "./routes/category.js";
 
 const app = express();
 // const routes=require('./routes/posts');
@@ -20,7 +18,7 @@ app.use(cors());
 const PORT = process.env.PORT || 3500;
 //connnect to mongo
 // Add environment related db connections here
-const db = dbconfig.mongoURI;
+const db = dbconfig.mongoUrlLocal;
 mongoose
   .connect(db)
   .then(() =>
@@ -29,7 +27,5 @@ mongoose
   .catch((error) => console.log(error.message));
 
 app.use("/users", users);
-app.use("/products", product);
-app.use("/categories", category);
 
-//close 
+//close
