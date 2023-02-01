@@ -5,6 +5,7 @@ import cors from "cors";
 
 import dbconfig from "./config/dbConfig.js";
 import users from "./users/routes.js";
+import { AuthVerify } from "./users/middleware.js";
 
 const app = express();
 // const routes=require('./routes/posts');

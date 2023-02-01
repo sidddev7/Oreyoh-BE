@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { statusCodes } from "../constants/status.js";
 import { decryptPassword } from "../helpers/cipher.js";
 import User from "./schema.js";
+import { checkPasswordMatch } from "./middleware.js";
 
 export const handleLogin = async (req, res) => {
   try {
@@ -12,7 +13,7 @@ export const handleLogin = async (req, res) => {
     if (user) {
       let pass = "";
       pass = await decryptPassword(password, process.env.PASSWORDKEY);
-      const isMatch = await bcrypt.compare(pass, user.password);
+      const isMatch = await checkPasswordMatch(password, user.password);
       if (isMatch) {
         // Password matches
         const payload = {
@@ -42,7 +43,7 @@ export const handleLogin = async (req, res) => {
       } else {
         return res
           .status(statusCodes.unauthorized)
-          .json({ message: "Wrong password" });
+          .json({ message: "Incorrect Password" });
       }
     } else {
       return res
@@ -99,6 +100,58 @@ export const handleRegister = async (req, res) => {
           }
         });
       });
+    }
+  } catch (err) {
+    return res
+      .status(statusCodes.internalServerError)
+      .json({ message: err.message });
+  }
+};
+
+export const changePassword = async (req, res) => {
+  try {
+    const { userId, newPassword, oldPassword } = req.body;
+    if (userId && newPassword) {
+      const user = await User.findById(userId);
+      if (user) {
+        // TODO: Add the decrpyter to convert the AES string to normal password
+        // const newPass = await decryptPassword(
+        //   newPassword,
+        //   process.env.PASSWORDKEY
+        // );
+        // const oldPass = await decryptPassword(
+        //   oldPassword,
+        //   process.env.JWTTOKENSECRET
+        // );
+        // console.log(newPass, oldPass);
+        const isMatch = await checkPasswordMatch(oldPassword, user.password);
+        console.log(isMatch);
+        if (isMatch) {
+          bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(newPassword, salt, async (err, hash) => {
+              if (err) {
+                return res
+                  .status(statusCodes.internalServerError)
+                  .json({ message: err.message });
+              } else {
+                user.password = hash;
+                const response = await user.save();
+                res
+                  .status(statusCodes.ok)
+                  .json({ message: "Password Changed Successfully" });
+              }
+            });
+          });
+        } else {
+          return res
+            .status(statusCodes.unauthorized)
+            .json({ message: "Old password does not match" });
+        }
+      } else {
+        return res
+          .status(statusCodes.notFound)
+          .json({ message: "User not found" });
+      }
     }
   } catch (err) {
     return res
