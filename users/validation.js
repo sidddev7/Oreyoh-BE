@@ -17,7 +17,34 @@ const userSchema = joi.object({
   userName: joi.string().label("User name").required().trim().lowercase(),
   email: joi.string().email().required().lowercase(),
   password: joi.string().required(),
-  //   following: joi.array({}),
+  following: joi.array().items(
+    joi
+      .string()
+      .label("Following user")
+      .required()
+      .trim()
+      .lowercase()
+      .regex(/[${};<>`]/, { invert: true })
+      .messages({
+        "string.pattern.invert.base":
+          `{{#label}} should not contains symbols like ( '$' , '}' , '{' , ';' , '<' , '>' ,` +
+          " '`' )",
+      })
+  ),
+  followers: joi.array().items(
+    joi
+      .string()
+      .label("Follower")
+      .required()
+      .trim()
+      .lowercase()
+      .regex(/[${};<>`]/, { invert: true })
+      .messages({
+        "string.pattern.invert.base":
+          `{{#label}} should not contains symbols like ( '$' , '}' , '{' , ';' , '<' , '>' ,` +
+          " '`' )",
+      })
+  ),
   //   followers: joi.array({}),
 });
 

@@ -1,9 +1,9 @@
 import "dotenv/config";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import User from "../schema/user.js";
 import { statusCodes } from "../constants/status.js";
 import { decryptPassword } from "../helpers/cipher.js";
+import User from "./schema.js";
 
 export const handleLogin = async (req, res) => {
   try {
@@ -11,8 +11,8 @@ export const handleLogin = async (req, res) => {
     const user = await User.findOne({ email });
     if (user) {
       let pass = "";
-      //   pass = await decryptPassword(password, process.env.PASSWORDKEY);
-      const isMatch = await bcrypt.compare(password, user.password);
+      pass = await decryptPassword(password, process.env.PASSWORDKEY);
+      const isMatch = await bcrypt.compare(pass, user.password);
       if (isMatch) {
         // Password matches
         const payload = {
@@ -66,7 +66,7 @@ export const handleRegister = async (req, res) => {
         .status(statusCodes.forbidden)
         .json({ message: "User with this email already exist" });
     } else {
-      //   const pass = await decryptPassword(password, process.env.PASSWORDKEY);
+      const pass = await decryptPassword(password, process.env.PASSWORDKEY);
       bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(password, salt, async (err, hash) => {
           try {

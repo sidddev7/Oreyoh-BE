@@ -1,6 +1,6 @@
 import express from "express";
-import { handleLogin, handleRegister } from "../controllers/users.js";
-import { userValidation } from "../validations/users.js";
+import { handleLogin, handleRegister } from "./controllers.js";
+import { userValidation } from "./validation.js";
 
 const users = express.Router();
 
