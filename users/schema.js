@@ -8,17 +8,17 @@ const UserSchema = mongoose.Schema(
     name: { type: String, required: [true, "Name is Required"] },
     userName: {
       type: String,
-      required: [true, "User Name is Required"],
-      unique: [true, "User name should be unique"],
+      required: [true, "Post Schema Error :User Name is Required"],
+      unique: [true, "Post Schema Error :User name should be unique"],
     },
     email: {
       type: String,
-      required: [true, "Email is required"],
-      unique: [true, "Email should be unique"],
+      required: [true, "Post Schema Error :Email is required"],
+      unique: [true, "Post Schema Error :Email should be unique"],
     },
     password: {
       type: String,
-      required: [true, "Password is required"],
+      required: [true, "Post Schema Error :Password is required"],
     },
     bio: String,
     followers: [
