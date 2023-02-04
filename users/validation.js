@@ -1,4 +1,4 @@
-import joi from "joi";
+import joi from '@hapi/joi';
 import { statusCodes } from "../constants/status.js";
 
 const userSchema = joi.object({

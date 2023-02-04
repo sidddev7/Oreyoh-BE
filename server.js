@@ -5,6 +5,7 @@ import cors from "cors";
 
 import dbconfig from "./config/dbConfig.js";
 import users from "./users/routes.js";
+import PostRouter from "./posts/routes.js";
 import { AuthVerify } from "./users/middleware.js";
 
 const app = express();
@@ -28,5 +29,6 @@ mongoose
   .catch((error) => console.log(error.message));
 
 app.use("/users", users);
+app.use("/post",PostRouter);
 
 //close
