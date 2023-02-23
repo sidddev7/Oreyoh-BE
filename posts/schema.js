@@ -13,7 +13,7 @@ const userExist=async(val)=>{
 const PostSchema = mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'users',
+        ref: 'Users',
         required: [true, "Post Schema Error : User ID is required !"],
         validate: {
             validator: userExist,
