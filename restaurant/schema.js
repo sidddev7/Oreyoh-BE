@@ -12,7 +12,8 @@ const RestaurantSchema = mongoose.Schema({
         type: String,
         minlength: [5, "Restaurant Schema Error : Restaurant name should be minimum 5 character long !"],
         maxlength: [50, "Restaurant Schema Error : Restaurant name should be maximum 50 character long !"],
-        required: [true, "Restaurant Schema Error : Restaurant name is required !"]
+        required: [true, "Restaurant Schema Error : Restaurant name is required !"],
+        unique:true,
     },
     location: {
         type: String,
@@ -80,4 +81,5 @@ const RestaurantSchema = mongoose.Schema({
     // }
 }, { timestamps: true });
 
-export default RestaurantSchema;
+const Restaurant = mongoose.model("Restaurant", RestaurantSchema);
+export default Restaurant;

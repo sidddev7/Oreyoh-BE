@@ -8,6 +8,12 @@ const userExist=async(val)=>{
     return ans;
 }
 
+// check if user exist before creating post
+const restaurantExist=async(val)=>{
+    const ans= await User.exists({_id:val});
+    return ans;
+}
+
 // const Schema = mongoose.Schema;
 // Create Schema
 const PostSchema = mongoose.Schema({
@@ -36,16 +42,16 @@ const PostSchema = mongoose.Schema({
         } 
     },
 
-    // restaurants: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'restaurants',
-    //     // ref:'productCategory'
-    //     required: [true, "Post Schema Error : Restaurants ID is required !"],
-    //     validate: {
-    //         validator: categoryExist,
-    //         message: props => `Post Schema Error : No Restaurants with ID : ${props.value} exist !`
-    //     }
-    // },
+    restaurants: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Restaurants',
+        // ref:'productCategory'
+        required: [true, "Post Schema Error : Restaurants ID is required !"],
+        validate: {
+            validator: restaurantExist,
+            message: props => `Post Schema Error : No Restaurants with ID : ${props.value} exist !`
+        }
+    },
 }, { timestamps: true });
 const Post = mongoose.model("posts", PostSchema);
 export default Post;

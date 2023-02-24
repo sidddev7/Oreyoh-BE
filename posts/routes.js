@@ -3,7 +3,7 @@ import { CreateNewPost, DeletePostById, GetAllPostWithFilter, GetPostByID, Updat
 const PostRouter = express.Router();
 
 // Create New Post
-PostRouter.post('new',CreateNewPost);
+PostRouter.post('create',CreateNewPost);
 
 // Update Post By ID
 PostRouter.put('update/:id',UpdatePostById);
