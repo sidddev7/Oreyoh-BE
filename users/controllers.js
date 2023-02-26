@@ -159,3 +159,11 @@ export const changePassword = async (req, res) => {
       .json({ message: err.message });
   }
 };
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const { limit = 10, page = 1 } = req.params;
+    console.log(limit, page);
+    const users=await User.find()
+  } catch (err) {}
+};
