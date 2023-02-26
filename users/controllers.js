@@ -5,7 +5,10 @@ import { statusCodes } from "../constants/status.js";
 import { decryptPassword } from "../helpers/cipher.js";
 import User from "./schema.js";
 import { checkPasswordMatch } from "./middleware.js";
+import { verifyid } from "../helpers/mongoose.js";
 
+export const followers = "followers";
+export const following = "following";
 export const handleLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -164,6 +167,111 @@ export const getAllUsers = async (req, res) => {
   try {
     const { limit = 10, page = 1 } = req.params;
     console.log(limit, page);
-    const users=await User.find()
+    const users = await User.find();
   } catch (err) {}
+};
+export const getStats = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { page = 1, limit = 10, type = followers } = req.query;
+    console.log(id, page, limit);
+    const user = await User.findById(id)
+      .select({
+        followers: 1,
+        following: 1,
+        _id: 0,
+      })
+      .populate({
+        path: `${type}`,
+        populate: [
+          {
+            path: "user",
+            model: "Users",
+            select: { followers: 0, following: 0, password: 0, __v: 0 },
+          },
+        ],
+      });
+    if (user) {
+      if (type === followers) {
+        return res.status(statusCodes.ok).json({
+          message: "Followers retrived successfully",
+          followers: user[`${followers}`],
+        });
+      } else if (type === following) {
+        return res.status(statusCodes.ok).json({
+          message: "following retrieved successfully",
+          following: user[`${following}`],
+        });
+      }
+    } else {
+      return res
+        .status(statusCodes.notFound)
+        .json({ message: "User not found" });
+    }
+  } catch (err) {
+    console.error(err.message);
+    return res
+      .status(statusCodes.internalServerError)
+      .json({ message: err.message });
+  }
+};
+
+export const addFollowing = async (req, res) => {
+  try {
+    const { userId, selectedUserId } = req.body;
+    if (userId === selectedUserId)
+      return res
+        .status(statusCodes.badRequest)
+        .json({ message: "Cannot follow own" });
+    else {
+      // first user starts following second user,
+      // so add the second user as following in the collection of first user,
+      // check whether the user already follows the second user or not
+      const isValidId = await verifyid(selectedUserId, User);
+      if (isValidId) {
+        const user = await User.findById(userId).select({ following: 1 });
+        const index = user.following.findIndex((item) => {
+          const idString = `${item}`.split('"')[1];
+          return idString === selectedUserId;
+        });
+        if (index !== -1) {
+          // TODO: We can add the remove follower here too
+          // return console.log(selectedUserId, userId);
+          await User.updateOne(
+            { _id: userId },
+            { $pull: { following: { user: selectedUserId } } }
+          );
+          await User.updateOne(
+            { _id: selectedUserId },
+            { $pull: { followers: { user: userId } } }
+          );
+          return res
+            .status(statusCodes.ok)
+            .json({ message: "You have successfully unfollowed this user" });
+        } else {
+          await User.updateOne(
+            { _id: userId },
+            { $push: { following: { user: selectedUserId } } }
+          );
+          await User.updateOne(
+            { _id: selectedUserId },
+            { $push: { followers: { user: userId } } }
+          );
+          return res
+            .status(statusCodes.ok)
+            .json({ message: "You started following" });
+          // and first user as follower in the collection of second user
+        }
+      } else {
+        return res
+          .status(statusCodes.badRequest)
+          .json({ message: "User is invalid" });
+      }
+    }
+  } catch (err) {
+    console.log(err);
+    return res
+      .status(statusCodes.internalServerError)
+      .json({ message: err.message });
+  }
 };
