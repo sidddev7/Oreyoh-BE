@@ -1,6 +1,6 @@
 import joi from '@hapi/joi';
 
-export const productValidationschema = joi.object({
+export const postValidationschema = joi.object({
     user: joi.string()
         .label("Post User-Id")
         .trim()
