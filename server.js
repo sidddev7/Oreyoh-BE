@@ -21,7 +21,7 @@ app.use(cors());
 const PORT = process.env.PORT || 3500;
 //connnect to mongo
 // Add environment related db connections here
-const db = dbconfig.mongoUrlLocal;
+const db = dbconfig.mongoURI;
 mongoose
   .connect(db)
   .then(() =>
@@ -30,12 +30,18 @@ mongoose
   .catch((error) => console.log(error.message));
 
 app.use("/users", users);
-app.use("/post",PostRouter);
-app.use("/restaurant",RestaurantRouter);
+app.use("/post", PostRouter);
+app.use("/restaurant", RestaurantRouter);
 
 // page not found error handling  middleware
 app.use("*", (req, res) => {
-  res.status(404).json({success:0,message:"We didn't find what you are looking for !",data:null});    
+  res
+    .status(404)
+    .json({
+      success: 0,
+      message: "We didn't find what you are looking for !",
+      data: null,
+    });
 });
 
 //close

@@ -15,7 +15,7 @@ export const handleLogin = async (req, res) => {
     const user = await User.findOne({ email });
     if (user) {
       let pass = "";
-      pass = await decryptPassword(password, process.env.PASSWORDKEY);
+      // pass = await decryptPassword(password, process.env.PASSWORDKEY);
       const isMatch = await checkPasswordMatch(password, user.password);
       if (isMatch) {
         // Password matches
@@ -70,7 +70,7 @@ export const handleRegister = async (req, res) => {
         .status(statusCodes.forbidden)
         .json({ message: "User with this email already exist" });
     } else {
-      const pass = await decryptPassword(password, process.env.PASSWORDKEY);
+      // const pass = await decryptPassword(password, process.env.PASSWORDKEY);
       bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(password, salt, async (err, hash) => {
           try {

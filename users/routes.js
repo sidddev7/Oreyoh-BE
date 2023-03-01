@@ -2,6 +2,7 @@ import express from "express";
 import {
   addFollowing,
   changePassword,
+  getAllUsers,
   getStats,
   handleLogin,
   handleRegister,
