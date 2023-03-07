@@ -4,10 +4,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 
 import dbconfig from "./config/dbConfig.js";
-import users from "./users/routes.js";
-import PostRouter from "./posts/routes.js";
-import { AuthVerify } from "./users/middleware.js";
-import RestaurantRouter from "./restaurant/routes.js";
+
 
 const app = express();
 // const routes=require('./routes/posts');
@@ -29,13 +26,11 @@ mongoose
   )
   .catch((error) => console.log(error.message));
 
-app.use("/users", users);
-app.use("/post",PostRouter);
-app.use("/restaurant",RestaurantRouter);
+
 
 // page not found error handling  middleware
 app.use("*", (req, res) => {
-  res.status(404).json({success:0,message:"We didn't find what you are looking for !",data:null});    
+  res.status(404).json({ success: 0, message: "We didn't find what you are looking for !", data: null });
 });
 
 //close
