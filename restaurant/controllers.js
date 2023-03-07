@@ -6,7 +6,8 @@ import Restaurant from "./schema.js";
 export const CreateNewRestaurant = async (req, res) => {
     try {
         const newRestaurant = Restaurant(req.body);
-        return res.status(200).json({ success: 1, message: "Restaurant Created Successfully.", data: newRestaurant });
+        let temp = await newRestaurant.save()
+        return res.status(200).json({ success: 1, message: "Restaurant Created Successfully.", data: temp });
     }
     catch (err) {
         if (err.name === 'MongoServerError' && err.code === 11000) {
